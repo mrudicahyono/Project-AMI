@@ -6,8 +6,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     && docker-php-ext-install intl pdo pdo_mysql mysqli curl \
-    && a2enmod rewrite \
-    && a2dismod mpm_event \
+    && a2enmod rewrite
+
+RUN if [ -f /etc/apache2/mods-enabled/mpm_event.conf ]; then \
+        a2dismod mpm_event; \
+    fi \
     && a2enmod mpm_prefork
 
 COPY . /var/www/html/
