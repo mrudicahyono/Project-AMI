@@ -6,12 +6,13 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     && docker-php-ext-install intl pdo pdo_mysql mysqli curl \
-    && a2enmod rewrite
-
-RUN if [ -f /etc/apache2/mods-enabled/mpm_event.conf ]; then \
-        a2dismod mpm_event; \
-    fi \
-    && a2enmod mpm_prefork
+    && a2enmod rewrite \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/ \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/
 
 COPY . /var/www/html/
 WORKDIR /var/www/html
