@@ -6,15 +6,17 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     && docker-php-ext-install intl pdo pdo_mysql mysqli curl \
-    && a2enmod rewrite \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_prefork.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_prefork.load \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/ \
-    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/
+    && a2enmod rewrite
+
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.* \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.* \
+    && rm -f /etc/apache2/mods-enabled/mpm_prefork.* \
+    && rm -f /etc/apache2/mods-available/mpm_event.load \
+    && rm -f /etc/apache2/mods-available/mpm_worker.load \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && ln -s /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && echo "=== ISI MODS-ENABLED MPM ===" \
+    && ls -la /etc/apache2/mods-enabled/ | grep mpm
 
 COPY . /var/www/html/
 WORKDIR /var/www/html
